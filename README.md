@@ -14,11 +14,11 @@
    переменную `SUPERJOB_KEY`:`SUPERJOB_KEY=your_secret_key`
    *Пример*: `SUPERJOB_KEY=v3.r.127490355.e05a1bdce643ecca0cad495d01bbf3e60935bd19.c4c514a7d0ec3c09c9e82e946131fbd35ce0e857`  
 3. Python3 должен быть уже установлен. Использовать pip (или pip3, если есть конфликт с Python2) для установки зависимостей:  
-```cmd
+```console
 pip install -r requirements.txt
 ```  
 4. Запустить скрипт:  
-```cmd
+```console
 python main.py
 ```
 ### Цель проекта
