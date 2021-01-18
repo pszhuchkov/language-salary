@@ -21,5 +21,5 @@ pip install -r requirements.txt
 ```cmd
 python main.py
 ```
-###Цель проекта
+### Цель проекта
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
