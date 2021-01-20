@@ -10,21 +10,21 @@ from requests.exceptions import ConnectionError, HTTPError
 from terminaltables import AsciiTable
 
 
-SERVICES_API = {
-    'HeadHunter': 'https://api.hh.ru/vacancies/',
-    'SuperJob': 'https://api.superjob.ru/2.0/vacancies/'
-}
+HH_API_URL = 'https://api.hh.ru/vacancies/'
+SJ_API_URL = 'https://api.superjob.ru/2.0/vacancies/'
+
 PROGRAMMING_LANGUAGES = [
     'JavaScript', 'Java', 'Python', 'Ruby',
     'PHP', 'C++', 'C#', 'C', 'Go', 'Scala'
 ]
+
 MOSCOW_ID_HH = 1
 MOSCOW_ID_SJ = 4
 PROGRAMMING_CATALOG_SJ = 48
 SEARCH_IN_VACANCY_NAME_SJ = 1
 
 
-def get_language_average_salary_hh(language, service='HeadHunter'):
+def get_language_average_salary_hh(language):
     vacancy_name = f'программист {language}'
     params = {
         'text': vacancy_name, 'search_field': 'name', 'area': MOSCOW_ID_HH
@@ -33,7 +33,7 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
     for page in count(0):
         params['page'] = page
         try:
-            page_response = requests.get(SERVICES_API[service], params=params)
+            page_response = requests.get(HH_API_URL, params=params)
             page_response.raise_for_status()
             page_with_vacancies = page_response.json()
             vacancies.extend(page_with_vacancies['items'])
@@ -44,7 +44,7 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
             print(conn_err, file=sys.stderr)
             time.sleep(5)
     vacancies_processed, average_salary = get_language_average_salary(
-        service, vacancies
+        vacancies, 'HeadHunter'
     )
     return {
         language:
@@ -56,7 +56,7 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
     }
 
 
-def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
+def get_language_average_salary_sj(language, superjob_key):
     params = {
         'town': MOSCOW_ID_SJ,
         'catalogues': PROGRAMMING_CATALOG_SJ,
@@ -72,8 +72,8 @@ def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
     for page in count(0):
         params['page'] = page
         try:
-            page_response = requests.get(SERVICES_API[service],
-                                         headers=headers, params=params)
+            page_response = requests.get(SJ_API_URL, headers=headers,
+                                         params=params)
             page_response.raise_for_status()
             page_with_vacancies = page_response.json()
             vacancies.extend(page_with_vacancies['objects'])
@@ -84,7 +84,7 @@ def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
             print(conn_err, file=sys.stderr)
             time.sleep(5)
     vacancies_processed, average_salary = get_language_average_salary(
-        service, vacancies
+        vacancies, 'SuperJob'
     )
     return {
         language:
@@ -96,7 +96,7 @@ def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
     }
 
 
-def get_language_average_salary(service, vacancies):
+def get_language_average_salary(vacancies, service):
     predicted_salaries = []
     for vacancy in vacancies:
         if service == 'HeadHunter':
