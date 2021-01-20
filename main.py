@@ -42,7 +42,7 @@ def get_language_average_salary_hh(language):
                 break
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
-            time.sleep(5)
+            time.sleep(3)
     vacancies_processed, average_salary = get_language_average_salary(
         vacancies, 'HeadHunter'
     )
@@ -82,7 +82,7 @@ def get_language_average_salary_sj(language, superjob_key):
                 break
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
-            time.sleep(5)
+            time.sleep(3)
     vacancies_processed, average_salary = get_language_average_salary(
         vacancies, 'SuperJob'
     )
