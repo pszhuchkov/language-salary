@@ -15,7 +15,6 @@ SERVICES_API = {
     'SuperJob': 'https://api.superjob.ru/2.0/vacancies/'
 }
 
-
 PROGRAMMING_LANGUAGES = [
     'JavaScript', 'Java', 'Python', 'Ruby',
     'PHP', 'C++', 'C#', 'C', 'Go', 'Scala'
@@ -25,16 +24,16 @@ PROGRAMMING_LANGUAGES = [
 def get_language_average_salary_hh(language, service='HeadHunter'):
     vacancy_name = f'программист {language}'
     params = {'text': vacancy_name, 'search_field': 'name', 'area': '1'}
-    vacancies_found, vacancies_list = 0, []
+    vacancies_found, vacancies = 0, []
     for page in count(0):
         params['page'] = page
         try:
             page_response = requests.get(SERVICES_API[service], params=params)
             page_response.raise_for_status()
-            page_data = page_response.json()
-            vacancies_list.extend(page_data['items'])
-            if page == page_data['pages'] - 1:
-                vacancies_found = page_data['found']
+            page_with_vacancies = page_response.json()
+            vacancies.extend(page_with_vacancies['items'])
+            if page == page_with_vacancies['pages'] - 1:
+                vacancies_found = page_with_vacancies['found']
                 break
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
@@ -43,7 +42,7 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
             print(http_err, file=sys.stderr)
             sys.exit()
     vacancies_processed, average_salary = get_language_average_salary(
-        service, vacancies_list
+        service, vacancies
     )
     return {
         language:
@@ -67,17 +66,17 @@ def get_language_average_salary_sj(language, service='SuperJob'):
         'keywords[1][skwc]': 'particular'
     }
     headers = {'X-Api-App-Id': os.getenv('SUPERJOB_KEY')}
-    vacancies_found, vacancies_list = 0, []
+    vacancies_found, vacancies = 0, []
     for page in count(0):
         params['page'] = page
         try:
             page_response = requests.get(SERVICES_API[service],
                                          headers=headers, params=params)
             page_response.raise_for_status()
-            page_data = page_response.json()
-            vacancies_list.extend(page_data['objects'])
-            if not page_data['more']:
-                vacancies_found = page_data['total']
+            page_with_vacancies = page_response.json()
+            vacancies.extend(page_with_vacancies['objects'])
+            if not page_with_vacancies['more']:
+                vacancies_found = page_with_vacancies['total']
                 break
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
@@ -86,7 +85,7 @@ def get_language_average_salary_sj(language, service='SuperJob'):
             print(http_err, file=sys.stderr)
             sys.exit()
     vacancies_processed, average_salary = get_language_average_salary(
-        service, vacancies_list
+        service, vacancies
     )
     return {
         language:
@@ -98,9 +97,9 @@ def get_language_average_salary_sj(language, service='SuperJob'):
     }
 
 
-def get_language_average_salary(service, vacancies_list):
+def get_language_average_salary(service, vacancies):
     predicted_salaries = []
-    for vacancy in vacancies_list:
+    for vacancy in vacancies:
         if service == 'HeadHunter':
             predicted_salary = predict_rub_salary_hh(vacancy)
         else:
@@ -141,16 +140,25 @@ def predict_salary(salary_from, salary_to):
     return int(predicted_salary)
 
 
-def print_average_salaries_table(service, average_salaries_data):
-    table_data = [['Язык программирования', 'Вакансий найдено',
-                   'Вакансий обработано', 'Средняя зарплата']]
-    table_data.extend([
-        [language, average_salaries_data[language]['vacancies_found'],
-         average_salaries_data[language]['vacancies_processed'],
-         average_salaries_data[language]['average_salary']]
-        for language in average_salaries_data.keys()
+def print_average_salaries_table(service, languages_average_salaries):
+    table_average_salaries = [
+        [
+            'Язык программирования',
+            'Вакансий найдено',
+            'Вакансий обработано',
+            'Средняя зарплата'
+        ]
+    ]
+    table_average_salaries.extend([
+        [
+            language,
+            vacancies_stats['vacancies_found'],
+            vacancies_stats['vacancies_processed'],
+            vacancies_stats['average_salary']
+        ]
+        for language, vacancies_stats in languages_average_salaries.items()
     ])
-    table_instance = AsciiTable(table_data, service)
+    table_instance = AsciiTable(table_average_salaries, service)
     return table_instance.table
 
 
