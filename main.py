@@ -13,7 +13,7 @@ from terminaltables import AsciiTable
 SERVICES_API = {
     'HeadHunter': 'https://api.hh.ru/vacancies/',
     'SuperJob': 'https://api.superjob.ru/2.0/vacancies/'
-                }
+}
 
 
 PROGRAMMING_LANGUAGES = [
@@ -57,9 +57,13 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
 
 def get_language_average_salary_sj(language, service='SuperJob'):
     params = {
-        'town': '4', 'catalogues': '48', 'keywords[0][keys]': 'программист',
-        'keywords[0][srws]': '1', 'keywords[0][skwc]': 'and',
-        'keywords[1][keys]': language, 'keywords[1][srws]': '1',
+        'town': '4',
+        'catalogues': '48',
+        'keywords[0][keys]': 'программист',
+        'keywords[0][srws]': '1',
+        'keywords[0][skwc]': 'and',
+        'keywords[1][keys]': language,
+        'keywords[1][srws]': '1',
         'keywords[1][skwc]': 'particular'
     }
     headers = {'X-Api-App-Id': os.getenv('SUPERJOB_KEY')}
