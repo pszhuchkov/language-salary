@@ -14,16 +14,21 @@ SERVICES_API = {
     'HeadHunter': 'https://api.hh.ru/vacancies/',
     'SuperJob': 'https://api.superjob.ru/2.0/vacancies/'
 }
-
 PROGRAMMING_LANGUAGES = [
     'JavaScript', 'Java', 'Python', 'Ruby',
     'PHP', 'C++', 'C#', 'C', 'Go', 'Scala'
 ]
+MOSCOW_ID_HH = 1
+MOSCOW_ID_SJ = 4
+PROGRAMMING_CATALOG_SJ = 48
+SEARCH_IN_VACANCY_NAME_SJ = 1
 
 
 def get_language_average_salary_hh(language, service='HeadHunter'):
     vacancy_name = f'программист {language}'
-    params = {'text': vacancy_name, 'search_field': 'name', 'area': '1'}
+    params = {
+        'text': vacancy_name, 'search_field': 'name', 'area': MOSCOW_ID_HH
+    }
     vacancies_found, vacancies = 0, []
     for page in count(0):
         params['page'] = page
@@ -56,13 +61,13 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
 
 def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
     params = {
-        'town': '4',
-        'catalogues': '48',
+        'town': MOSCOW_ID_SJ,
+        'catalogues': PROGRAMMING_CATALOG_SJ,
         'keywords[0][keys]': 'программист',
-        'keywords[0][srws]': '1',
+        'keywords[0][srws]': SEARCH_IN_VACANCY_NAME_SJ,
         'keywords[0][skwc]': 'and',
         'keywords[1][keys]': language,
-        'keywords[1][srws]': '1',
+        'keywords[1][srws]': SEARCH_IN_VACANCY_NAME_SJ,
         'keywords[1][skwc]': 'particular'
     }
     headers = {'X-Api-App-Id': superjob_key}
