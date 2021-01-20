@@ -151,7 +151,7 @@ def print_average_salaries_table(service, average_salaries_data):
         for language in average_salaries_data.keys()
     ])
     table_instance = AsciiTable(table_data, service)
-    print(table_instance.table)
+    return table_instance.table
 
 
 def main():
@@ -165,9 +165,11 @@ def main():
         languages_average_salaries_sj.update(
             get_language_average_salary_sj(language)
         )
-    print_average_salaries_table('HeadHunter', languages_average_salaries_hh)
+    print(print_average_salaries_table('HeadHunter',
+                                       languages_average_salaries_hh))
     print()
-    print_average_salaries_table('SuperJob', languages_average_salaries_sj)
+    print(print_average_salaries_table('SuperJob',
+                                       languages_average_salaries_sj))
 
 
 if __name__ == '__main__':
