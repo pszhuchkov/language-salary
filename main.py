@@ -43,9 +43,6 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
             time.sleep(5)
-        except HTTPError as http_err:
-            print(http_err, file=sys.stderr)
-            sys.exit()
     vacancies_processed, average_salary = get_language_average_salary(
         service, vacancies
     )
@@ -86,9 +83,6 @@ def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
             time.sleep(5)
-        except HTTPError as http_err:
-            print(http_err, file=sys.stderr)
-            sys.exit()
     vacancies_processed, average_salary = get_language_average_salary(
         service, vacancies
     )
@@ -172,18 +166,22 @@ def main():
     superjob_key = os.getenv('SUPERJOB_KEY')
     languages_average_salaries_hh = {}
     languages_average_salaries_sj = {}
-    for language in PROGRAMMING_LANGUAGES:
-        languages_average_salaries_hh.update(
-            get_language_average_salary_hh(language)
-        )
-        languages_average_salaries_sj.update(
-            get_language_average_salary_sj(language, superjob_key)
-        )
-    print(print_average_salaries_table('HeadHunter',
-                                       languages_average_salaries_hh))
-    print()
-    print(print_average_salaries_table('SuperJob',
-                                       languages_average_salaries_sj))
+    try:
+        for language in PROGRAMMING_LANGUAGES:
+            languages_average_salaries_hh.update(
+                get_language_average_salary_hh(language)
+            )
+            languages_average_salaries_sj.update(
+                get_language_average_salary_sj(language, superjob_key)
+            )
+        print(print_average_salaries_table('HeadHunter',
+                                           languages_average_salaries_hh))
+        print()
+        print(print_average_salaries_table('SuperJob',
+                                           languages_average_salaries_sj))
+    except HTTPError as http_err:
+        print(http_err, file=sys.stderr)
+        sys.exit()
 
 
 if __name__ == '__main__':
