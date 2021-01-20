@@ -54,7 +54,7 @@ def get_language_average_salary_hh(language, service='HeadHunter'):
     }
 
 
-def get_language_average_salary_sj(language, service='SuperJob'):
+def get_language_average_salary_sj(language, superjob_key, service='SuperJob'):
     params = {
         'town': '4',
         'catalogues': '48',
@@ -65,7 +65,7 @@ def get_language_average_salary_sj(language, service='SuperJob'):
         'keywords[1][srws]': '1',
         'keywords[1][skwc]': 'particular'
     }
-    headers = {'X-Api-App-Id': os.getenv('SUPERJOB_KEY')}
+    headers = {'X-Api-App-Id': superjob_key}
     vacancies_found, vacancies = 0, []
     for page in count(0):
         params['page'] = page
@@ -164,6 +164,7 @@ def print_average_salaries_table(service, languages_average_salaries):
 
 def main():
     load_dotenv()
+    superjob_key = os.getenv('SUPERJOB_KEY')
     languages_average_salaries_hh = {}
     languages_average_salaries_sj = {}
     for language in PROGRAMMING_LANGUAGES:
@@ -171,7 +172,7 @@ def main():
             get_language_average_salary_hh(language)
         )
         languages_average_salaries_sj.update(
-            get_language_average_salary_sj(language)
+            get_language_average_salary_sj(language, superjob_key)
         )
     print(print_average_salaries_table('HeadHunter',
                                        languages_average_salaries_hh))
