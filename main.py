@@ -1,11 +1,13 @@
-import requests
 import os
 import sys
 import time
-from itertools import count
+
+import requests
+
 from dotenv import load_dotenv
-from terminaltables import AsciiTable
+from itertools import count
 from requests.exceptions import ConnectionError, HTTPError
+from terminaltables import AsciiTable
 
 
 SERVICES_API = {
