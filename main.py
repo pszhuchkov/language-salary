@@ -32,17 +32,13 @@ def get_language_average_salary_hh(language):
     vacancies_found, vacancies = 0, []
     for page in count(0):
         params['page'] = page
-        try:
-            page_response = requests.get(HH_API_URL, params=params)
-            page_response.raise_for_status()
-            page_with_vacancies = page_response.json()
-            vacancies.extend(page_with_vacancies['items'])
-            if page >= page_with_vacancies['pages'] - 1:
-                vacancies_found = page_with_vacancies['found']
-                break
-        except ConnectionError as conn_err:
-            print(conn_err, file=sys.stderr)
-            time.sleep(3)
+        page_response = requests.get(HH_API_URL, params=params)
+        page_response.raise_for_status()
+        page_with_vacancies = page_response.json()
+        vacancies.extend(page_with_vacancies['items'])
+        if page >= page_with_vacancies['pages'] - 1:
+            vacancies_found = page_with_vacancies['found']
+            break
     vacancies_processed, average_salary = get_language_average_salary(
         vacancies, 'HeadHunter'
     )
@@ -71,18 +67,14 @@ def get_language_average_salary_sj(language, superjob_key):
     vacancies_found, vacancies = 0, []
     for page in count(0):
         params['page'] = page
-        try:
-            page_response = requests.get(SJ_API_URL, headers=headers,
-                                         params=params)
-            page_response.raise_for_status()
-            page_with_vacancies = page_response.json()
-            vacancies.extend(page_with_vacancies['objects'])
-            if not page_with_vacancies['more']:
-                vacancies_found = page_with_vacancies['total']
-                break
-        except ConnectionError as conn_err:
-            print(conn_err, file=sys.stderr)
-            time.sleep(3)
+        page_response = requests.get(SJ_API_URL, headers=headers,
+                                     params=params)
+        page_response.raise_for_status()
+        page_with_vacancies = page_response.json()
+        vacancies.extend(page_with_vacancies['objects'])
+        if not page_with_vacancies['more']:
+            vacancies_found = page_with_vacancies['total']
+            break
     vacancies_processed, average_salary = get_language_average_salary(
         vacancies, 'SuperJob'
     )
@@ -179,6 +171,9 @@ def main():
         print()
         print(print_average_salaries_table('SuperJob',
                                            languages_average_salaries_sj))
+    except ConnectionError as conn_err:
+        print(conn_err, file=sys.stderr)
+        time.sleep(3)
     except HTTPError as http_err:
         print(http_err, file=sys.stderr)
         sys.exit()
