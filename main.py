@@ -20,14 +20,15 @@ PROGRAMMING_LANGUAGES = [
 
 MOSCOW_AREA_ID_HH = 1
 MOSCOW_AREA_ID_SJ = 4
+
 PROGRAMMING_CATALOG_SJ = 48
 SEARCH_IN_VACANCY_NAME_SJ = 1
 
 
-def get_language_average_salary_hh(language):
+def get_language_average_salary_hh(language, area_id):
     vacancy_name = f'программист {language}'
     params = {
-        'text': vacancy_name, 'search_field': 'name', 'area': MOSCOW_AREA_ID_HH
+        'text': vacancy_name, 'search_field': 'name', 'area': area_id
     }
     vacancies_found, vacancies = 0, []
     for page in count(0):
@@ -52,9 +53,9 @@ def get_language_average_salary_hh(language):
     }
 
 
-def get_language_average_salary_sj(language, superjob_key):
+def get_language_average_salary_sj(language, superjob_key, area_id):
     params = {
-        'town': MOSCOW_AREA_ID_SJ,
+        'town': area_id,
         'catalogues': PROGRAMMING_CATALOG_SJ,
         'keywords[0][keys]': 'программист',
         'keywords[0][srws]': SEARCH_IN_VACANCY_NAME_SJ,
@@ -161,10 +162,11 @@ def main():
     try:
         for language in PROGRAMMING_LANGUAGES:
             languages_average_salaries_hh.update(
-                get_language_average_salary_hh(language)
+                get_language_average_salary_hh(language, MOSCOW_AREA_ID_HH)
             )
             languages_average_salaries_sj.update(
-                get_language_average_salary_sj(language, superjob_key)
+                get_language_average_salary_sj(language, superjob_key,
+                                               MOSCOW_AREA_ID_SJ)
             )
         print(generate_average_salaries_table('HeadHunter',
                                               languages_average_salaries_hh))
