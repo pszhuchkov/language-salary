@@ -18,8 +18,8 @@ PROGRAMMING_LANGUAGES = [
     'PHP', 'C++', 'C#', 'C', 'Go', 'Scala'
 ]
 
-MOSCOW_ID_HH = 1
-MOSCOW_ID_SJ = 4
+MOSCOW_AREA_ID_HH = 1
+MOSCOW_AREA_ID_SJ = 4
 PROGRAMMING_CATALOG_SJ = 48
 SEARCH_IN_VACANCY_NAME_SJ = 1
 
@@ -27,7 +27,7 @@ SEARCH_IN_VACANCY_NAME_SJ = 1
 def get_language_average_salary_hh(language):
     vacancy_name = f'программист {language}'
     params = {
-        'text': vacancy_name, 'search_field': 'name', 'area': MOSCOW_ID_HH
+        'text': vacancy_name, 'search_field': 'name', 'area': MOSCOW_AREA_ID_HH
     }
     vacancies_found, vacancies = 0, []
     for page in count(0):
@@ -54,7 +54,7 @@ def get_language_average_salary_hh(language):
 
 def get_language_average_salary_sj(language, superjob_key):
     params = {
-        'town': MOSCOW_ID_SJ,
+        'town': MOSCOW_AREA_ID_SJ,
         'catalogues': PROGRAMMING_CATALOG_SJ,
         'keywords[0][keys]': 'программист',
         'keywords[0][srws]': SEARCH_IN_VACANCY_NAME_SJ,
