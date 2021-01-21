@@ -37,7 +37,7 @@ def get_language_average_salary_hh(language):
             page_response.raise_for_status()
             page_with_vacancies = page_response.json()
             vacancies.extend(page_with_vacancies['items'])
-            if page == page_with_vacancies['pages'] - 1:
+            if page >= page_with_vacancies['pages'] - 1:
                 vacancies_found = page_with_vacancies['found']
                 break
         except ConnectionError as conn_err:
