@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import time
@@ -132,7 +133,8 @@ def predict_salary(salary_from, salary_to):
     return int(predicted_salary)
 
 
-def generate_average_salaries_table(service, languages_average_salaries):
+def generate_average_salaries_table(service, languages_average_salaries,
+                                    area_id):
     table_average_salaries = [
         [
             'Язык программирования',
@@ -150,29 +152,50 @@ def generate_average_salaries_table(service, languages_average_salaries):
         ]
         for language, vacancies_stats in languages_average_salaries.items()
     ])
-    table_instance = AsciiTable(table_average_salaries, service)
+    table_instance = AsciiTable(table_average_salaries,
+                                f"{service} (area id: {area_id})")
     return table_instance.table
+
+
+def get_parsed_arguments():
+    parser = argparse.ArgumentParser(
+        description='Скрипт получает информацию о среднем уровне зарплат '
+                    'программистов, используя API HeadHunter и SuperJob. '
+                    'Полученная информация обрабатывается и выводится в '
+                    'терминал в виде сравнительной таблицы. По умолчанию '
+                    'выводится информации для города Москвы.'
+    )
+    parser.add_argument('-hh', '--hh_area_id', type=str,
+                        default=MOSCOW_AREA_ID_HH)
+    parser.add_argument('-sj', '--sj_area_id', type=str,
+                        default=MOSCOW_AREA_ID_SJ)
+    return parser.parse_args()
 
 
 def main():
     load_dotenv()
+    args = get_parsed_arguments()
     superjob_key = os.getenv('SUPERJOB_KEY')
     languages_average_salaries_hh = {}
     languages_average_salaries_sj = {}
     try:
         for language in PROGRAMMING_LANGUAGES:
             languages_average_salaries_hh.update(
-                get_language_average_salary_hh(language, MOSCOW_AREA_ID_HH)
+                get_language_average_salary_hh(language, args.hh_area_id)
             )
             languages_average_salaries_sj.update(
                 get_language_average_salary_sj(language, superjob_key,
-                                               MOSCOW_AREA_ID_SJ)
+                                               args.sj_area_id)
             )
         print(generate_average_salaries_table('HeadHunter',
-                                              languages_average_salaries_hh))
+                                              languages_average_salaries_hh,
+                                              args.hh_area_id)
+              )
         print()
         print(generate_average_salaries_table('SuperJob',
-                                              languages_average_salaries_sj))
+                                              languages_average_salaries_sj,
+                                              args.sj_area_id)
+              )
     except ConnectionError as conn_err:
         print(conn_err, file=sys.stderr)
         time.sleep(3)
