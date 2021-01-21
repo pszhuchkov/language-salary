@@ -131,7 +131,7 @@ def predict_salary(salary_from, salary_to):
     return int(predicted_salary)
 
 
-def print_average_salaries_table(service, languages_average_salaries):
+def generate_average_salaries_table(service, languages_average_salaries):
     table_average_salaries = [
         [
             'Язык программирования',
@@ -166,11 +166,11 @@ def main():
             languages_average_salaries_sj.update(
                 get_language_average_salary_sj(language, superjob_key)
             )
-        print(print_average_salaries_table('HeadHunter',
-                                           languages_average_salaries_hh))
+        print(generate_average_salaries_table('HeadHunter',
+                                              languages_average_salaries_hh))
         print()
-        print(print_average_salaries_table('SuperJob',
-                                           languages_average_salaries_sj))
+        print(generate_average_salaries_table('SuperJob',
+                                              languages_average_salaries_sj))
     except ConnectionError as conn_err:
         print(conn_err, file=sys.stderr)
         time.sleep(3)
