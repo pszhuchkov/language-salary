@@ -42,8 +42,7 @@ def get_language_average_salary_hh(language, area_id):
             vacancies_found = page_with_vacancies['found']
             break
     vacancies_processed, average_salary = get_language_average_salary(
-        vacancies, 'HeadHunter'
-    )
+        vacancies, get_language_average_salary_hh)
     return {
         language:
             {
@@ -78,8 +77,7 @@ def get_language_average_salary_sj(language, superjob_key, area_id):
             vacancies_found = page_with_vacancies['total']
             break
     vacancies_processed, average_salary = get_language_average_salary(
-        vacancies, 'SuperJob'
-    )
+        vacancies, get_language_average_salary_sj)
     return {
         language:
             {
@@ -90,10 +88,10 @@ def get_language_average_salary_sj(language, superjob_key, area_id):
     }
 
 
-def get_language_average_salary(vacancies, service):
+def get_language_average_salary(vacancies, calling_function):
     predicted_salaries = []
     for vacancy in vacancies:
-        if service == 'HeadHunter':
+        if calling_function == get_language_average_salary_hh:
             predicted_salary = predict_rub_salary_hh(vacancy)
         else:
             predicted_salary = predict_rub_salary_sj(vacancy)
