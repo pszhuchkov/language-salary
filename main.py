@@ -42,7 +42,7 @@ def get_language_average_salary_hh(language, area_id):
             vacancies_found = page_with_vacancies['found']
             break
     vacancies_processed, average_salary = get_language_average_salary(
-        vacancies, get_language_average_salary_hh)
+        vacancies, predict_rub_salary_hh)
     return {
         language:
             {
@@ -77,7 +77,7 @@ def get_language_average_salary_sj(language, superjob_key, area_id):
             vacancies_found = page_with_vacancies['total']
             break
     vacancies_processed, average_salary = get_language_average_salary(
-        vacancies, get_language_average_salary_sj)
+        vacancies, predict_rub_salary_sj)
     return {
         language:
             {
@@ -88,14 +88,10 @@ def get_language_average_salary_sj(language, superjob_key, area_id):
     }
 
 
-def get_language_average_salary(vacancies, calling_function):
+def get_language_average_salary(vacancies, predict_rub_salary):
     predicted_salaries = []
     for vacancy in vacancies:
-        predicted_salary = None
-        if calling_function == get_language_average_salary_hh:
-            predicted_salary = predict_rub_salary_hh(vacancy)
-        elif calling_function == get_language_average_salary_sj:
-            predicted_salary = predict_rub_salary_sj(vacancy)
+        predicted_salary = predict_rub_salary(vacancy)
         if predicted_salary:
             predicted_salaries.append(predicted_salary)
     if predicted_salaries:
