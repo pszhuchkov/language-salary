@@ -188,7 +188,8 @@ def main():
             )
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
-            print(f'Статистика зарплат по {language} не собрана')
+            print(f'Проблема соединения: статистика зарплат по {language} '
+                  f'не собрана')
             time.sleep(3)
         except HTTPError as http_err:
             print(http_err, file=sys.stderr)
