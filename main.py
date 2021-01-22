@@ -177,8 +177,8 @@ def main():
     superjob_key = os.getenv('SUPERJOB_KEY')
     languages_average_salaries_hh = {}
     languages_average_salaries_sj = {}
-    try:
-        for language in PROGRAMMING_LANGUAGES:
+    for language in PROGRAMMING_LANGUAGES:
+        try:
             languages_average_salaries_hh.update(
                 get_language_average_salary_hh(language, args.hh_area_id)
             )
@@ -186,21 +186,19 @@ def main():
                 get_language_average_salary_sj(language, superjob_key,
                                                args.sj_area_id)
             )
-        print(generate_average_salaries_table('HeadHunter',
-                                              languages_average_salaries_hh,
-                                              args.hh_area_id)
+            print(generate_average_salaries_table(
+                'HeadHunter', languages_average_salaries_hh, args.hh_area_id)
+                  )
+            print()
+            print(generate_average_salaries_table(
+                'SuperJob', languages_average_salaries_sj, args.sj_area_id)
               )
-        print()
-        print(generate_average_salaries_table('SuperJob',
-                                              languages_average_salaries_sj,
-                                              args.sj_area_id)
-              )
-    except ConnectionError as conn_err:
-        print(conn_err, file=sys.stderr)
-        time.sleep(3)
-    except HTTPError as http_err:
-        print(http_err, file=sys.stderr)
-        sys.exit()
+        except ConnectionError as conn_err:
+            print(conn_err, file=sys.stderr)
+            time.sleep(3)
+        except HTTPError as http_err:
+            print(http_err, file=sys.stderr)
+            sys.exit()
 
 
 if __name__ == '__main__':
