@@ -164,9 +164,9 @@ def get_parsed_arguments():
                     'терминал в виде сравнительной таблицы. По умолчанию '
                     'выводится информации для города Москвы.'
     )
-    parser.add_argument('-hh', '--hh_area_id', type=str,
+    parser.add_argument('-hh', '--hh_area_id', type=int,
                         default=MOSCOW_AREA_ID_HH)
-    parser.add_argument('-sj', '--sj_area_id', type=str,
+    parser.add_argument('-sj', '--sj_area_id', type=int,
                         default=MOSCOW_AREA_ID_SJ)
     return parser.parse_args()
 
