@@ -186,19 +186,20 @@ def main():
                 get_language_average_salary_sj(language, superjob_key,
                                                args.sj_area_id)
             )
-            print(generate_average_salaries_table(
-                'HeadHunter', languages_average_salaries_hh, args.hh_area_id)
-                  )
-            print()
-            print(generate_average_salaries_table(
-                'SuperJob', languages_average_salaries_sj, args.sj_area_id)
-              )
         except ConnectionError as conn_err:
             print(conn_err, file=sys.stderr)
+            print(f'Статистика зарплат по {language} не собрана')
             time.sleep(3)
         except HTTPError as http_err:
             print(http_err, file=sys.stderr)
             sys.exit()
+    print(generate_average_salaries_table(
+        'HeadHunter', languages_average_salaries_hh, args.hh_area_id)
+    )
+    print()
+    print(generate_average_salaries_table(
+        'SuperJob', languages_average_salaries_sj, args.sj_area_id)
+    )
 
 
 if __name__ == '__main__':
