@@ -152,7 +152,7 @@ def generate_average_salaries_table(service, languages_average_salaries,
         for language, vacancies_stats in languages_average_salaries.items()
     ])
     table_instance = AsciiTable(table_average_salaries,
-                                f"{service} (area id: {area_id})")
+                                f'{service} (area id: {area_id})')
     return table_instance.table
 
 
