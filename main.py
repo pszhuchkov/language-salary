@@ -91,9 +91,10 @@ def get_language_average_salary_sj(language, superjob_key, area_id):
 def get_language_average_salary(vacancies, calling_function):
     predicted_salaries = []
     for vacancy in vacancies:
+        predicted_salary = None
         if calling_function == get_language_average_salary_hh:
             predicted_salary = predict_rub_salary_hh(vacancy)
-        else:
+        elif calling_function == get_language_average_salary_sj:
             predicted_salary = predict_rub_salary_sj(vacancy)
         if predicted_salary:
             predicted_salaries.append(predicted_salary)
